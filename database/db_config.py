@@ -59,6 +59,7 @@ def create_database():
             title TEXT NOT NULL,
             genre TEXT NOT NULL,
             rating TEXT NOT NULL,
+            movie_rating TEXT,
             duration INTEGER NOT NULL,
             description TEXT,
             actors TEXT
