@@ -1,3 +1,16 @@
+"""
+Authors:
+    Zayan Abdulla Nazil (23061331)
+    Yoosuf Ayaan Musthaq (23064777)
+    Mohamed Shaihan Fath-hulla (23061309)
+
+This module handles the test cases of the cinema booking system.
+"""
+
+
+
+
+
 import unittest
 from database.db_config import initialize_database
 from database.db_manager import DatabaseManager
