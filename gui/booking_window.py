@@ -24,7 +24,26 @@ class BookingScreen:
     def __init__(self,parent,user_data):
         self.parent=parent
         self.user_data=user_data
-        ttk.Label(self.parent,text="Book Tickets",font=('Helvetica',16,'bold')).grid(row=0,column=0,columnspan=2,pady=20)
+        
+        # Create main container frame
+        main_frame = ttk.Frame(self.parent)
+        main_frame.grid(row=0, column=0, padx=10, pady=10)
+        
+        # Create booking form frame (left side)
+        booking_frame = ttk.Frame(main_frame)
+        booking_frame.grid(row=0, column=0, padx=10, pady=10)
+        
+        # Create receipt frame (right side)
+        receipt_frame = ttk.LabelFrame(main_frame, text="Booking Receipt")
+        receipt_frame.grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        
+        # Add receipt placeholder
+        self.receipt_text = tk.Text(receipt_frame, width=30, height=20)
+        self.receipt_text.grid(padx=10, pady=10)
+        self.receipt_text.config(state='disabled')
+
+        # Move existing booking form elements to booking_frame instead of self.parent
+        ttk.Label(booking_frame,text="Book Tickets",font=('Helvetica',16,'bold')).grid(row=0,column=0,columnspan=2,pady=20)
 
         self.city_var=tk.StringVar()
         self.film_var=tk.StringVar()
@@ -34,36 +53,36 @@ class BookingScreen:
         self.tickets_var=tk.IntVar(value=1)
 
         cities=['Birmingham','Bristol','Cardiff','London']
-        ttk.Label(self.parent,text="City:").grid(row=1,column=0,sticky=tk.W)
-        c_combo=ttk.Combobox(self.parent,textvariable=self.city_var,values=cities,state='readonly')
+        ttk.Label(booking_frame,text="City:").grid(row=1,column=0,sticky=tk.W)
+        c_combo=ttk.Combobox(booking_frame,textvariable=self.city_var,values=cities,state='readonly')
         c_combo.grid(row=1,column=1,pady=5)
 
-        ttk.Label(self.parent,text="Film:").grid(row=2,column=0,sticky=tk.W)
-        self.film_combo=ttk.Combobox(self.parent,textvariable=self.film_var,state='readonly')
+        ttk.Label(booking_frame,text="Film:").grid(row=2,column=0,sticky=tk.W)
+        self.film_combo=ttk.Combobox(booking_frame,textvariable=self.film_var,state='readonly')
         self.film_combo.grid(row=2,column=1,pady=5)
 
-        ttk.Label(self.parent,text="Date:").grid(row=3,column=0,sticky=tk.W)
-        self.date_combo=ttk.Combobox(self.parent,textvariable=self.date_var,state='readonly')
+        ttk.Label(booking_frame,text="Date:").grid(row=3,column=0,sticky=tk.W)
+        self.date_combo=ttk.Combobox(booking_frame,textvariable=self.date_var,state='readonly')
         self.date_combo.grid(row=3,column=1,pady=5)
 
-        ttk.Label(self.parent,text="Time:").grid(row=4,column=0,sticky=tk.W)
-        self.time_combo=ttk.Combobox(self.parent,textvariable=self.time_var,state='readonly')
+        ttk.Label(booking_frame,text="Time:").grid(row=4,column=0,sticky=tk.W)
+        self.time_combo=ttk.Combobox(booking_frame,textvariable=self.time_var,state='readonly')
         self.time_combo.grid(row=4,column=1,pady=5)
 
-        ttk.Label(self.parent,text="Ticket Type:").grid(row=5,column=0,sticky=tk.W)
-        ttk.Radiobutton(self.parent,text="Lower Hall",value="lower_hall",variable=self.ticket_type_var).grid(row=5,column=1,sticky=tk.W)
-        ttk.Radiobutton(self.parent,text="Upper Gallery",value="upper_gallery",variable=self.ticket_type_var).grid(row=6,column=1,sticky=tk.W)
-        ttk.Radiobutton(self.parent,text="VIP",value="vip",variable=self.ticket_type_var).grid(row=7,column=1,sticky=tk.W)
+        ttk.Label(booking_frame,text="Ticket Type:").grid(row=5,column=0,sticky=tk.W)
+        ttk.Radiobutton(booking_frame,text="Lower Hall",value="lower_hall",variable=self.ticket_type_var).grid(row=5,column=1,sticky=tk.W)
+        ttk.Radiobutton(booking_frame,text="Upper Gallery",value="upper_gallery",variable=self.ticket_type_var).grid(row=6,column=1,sticky=tk.W)
+        ttk.Radiobutton(booking_frame,text="VIP",value="vip",variable=self.ticket_type_var).grid(row=7,column=1,sticky=tk.W)
 
-        ttk.Label(self.parent,text="Number of Tickets:").grid(row=8,column=0,sticky=tk.W)
-        ttk.Spinbox(self.parent,from_=1,to=10,textvariable=self.tickets_var).grid(row=8,column=1,pady=5)
+        ttk.Label(booking_frame,text="Number of Tickets:").grid(row=8,column=0,sticky=tk.W)
+        ttk.Spinbox(booking_frame,from_=1,to=10,textvariable=self.tickets_var).grid(row=8,column=1,pady=5)
 
-        ttk.Button(self.parent,text="Load Films",command=self.load_films).grid(row=9,column=0,pady=10)
-        ttk.Button(self.parent,text="Load Showtimes",command=self.load_showtimes).grid(row=9,column=1,pady=10)
-        ttk.Button(self.parent,text="Check Price & Availability",command=self.check_price).grid(row=10,column=0,pady=10)
-        ttk.Button(self.parent,text="Confirm Booking",command=self.confirm_booking).grid(row=10,column=1,pady=10)
+        ttk.Button(booking_frame,text="Load Films",command=self.load_films).grid(row=9,column=0,pady=10)
+        ttk.Button(booking_frame,text="Load Showtimes",command=self.load_showtimes).grid(row=9,column=1,pady=10)
+        ttk.Button(booking_frame,text="Check Price & Availability",command=self.check_price).grid(row=10,column=0,pady=10)
+        ttk.Button(booking_frame,text="Confirm Booking",command=self.confirm_booking).grid(row=10,column=1,pady=10)
 
-        self.info_label=ttk.Label(self.parent,text="")
+        self.info_label=ttk.Label(booking_frame,text="")
         self.info_label.grid(row=11,column=0,columnspan=2)
 
     def load_films(self):
@@ -171,3 +190,35 @@ class BookingScreen:
         db.insert_record('bookings',data)
         messagebox.showinfo("Success",f"Booking confirmed!\nRef: {booking_id}\nTotal: £{total:.2f}")
         self.info_label.config(text="")
+        
+        # After successful booking, update the receipt
+        self.update_receipt(booking_id, {
+            'film': film,
+            'date': date,
+            'time': time,
+            'screen': ttype.replace('_', ' ').title(),
+            'tickets': tickets,
+            'total': total,
+            'booking_date': '2024-12-08'  # Current date in your system
+        })
+
+    def update_receipt(self, booking_id, details):
+        """Update the receipt display with booking details"""
+        receipt_text = f"""
+        BOOKING REFERENCE: {booking_id}
+        ------------------------
+        Film: {details['film']}
+        Date: {details['date']}
+        Time: {details['time']}
+        Screen: {details['screen']}
+        Number of Tickets: {details['tickets']}
+        ------------------------
+        Total Cost: £{details['total']:.2f}
+        ------------------------
+        Booking Date: {details['date']}
+        """
+        
+        self.receipt_text.config(state='normal')
+        self.receipt_text.delete(1.0, tk.END)
+        self.receipt_text.insert(1.0, receipt_text)
+        self.receipt_text.config(state='disabled')
