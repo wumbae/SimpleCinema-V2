@@ -1,3 +1,12 @@
+"""
+Authors:
+    Zayan Abdulla Nazil (23061331)
+    Yoosuf Ayaan Musthaq (23064777)
+    Mohamed Shaihan Fath-hulla (23061309)
+
+This module handles the cinema management interface of the cinema booking system.
+"""
+
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database.db_manager import DatabaseManager

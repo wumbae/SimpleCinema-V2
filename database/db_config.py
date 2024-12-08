@@ -1,3 +1,12 @@
+"""
+Authors:
+    Zayan Abdulla Nazil (23061331)
+    Yoosuf Ayaan Musthaq (23064777)
+    Mohamed Shaihan Fath-hulla (23061309)
+
+This module handles the database configuration and initialization for the cinema booking system.
+"""
+
 import sqlite3
 import os
 import uuid
