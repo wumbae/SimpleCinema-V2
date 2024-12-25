@@ -91,8 +91,13 @@ class BookingScreen:
         ttk.Button(booking_frame,text="Check Price & Availability",command=self.check_price).grid(row=10,column=0,pady=10)
         ttk.Button(booking_frame,text="Confirm Booking",command=self.confirm_booking).grid(row=10,column=1,pady=10)
 
+        ttk.Label(booking_frame, text="Search Booking:").grid(row=11, column=0, sticky=tk.W)
+        self.booking_id_entry = ttk.Entry(booking_frame)
+        self.booking_id_entry.grid(row=11, column=1, pady=5)
+        ttk.Button(booking_frame, text="Load Booking", command=self.load_booking_receipt).grid(row=12, column=0, columnspan=2, pady=10)
+
         self.info_label=ttk.Label(booking_frame,text="")
-        self.info_label.grid(row=11,column=0,columnspan=2)
+        self.info_label.grid(row=13,column=0,columnspan=2)
 
     def load_films(self):
         city=self.city_var.get()
@@ -170,6 +175,9 @@ class BookingScreen:
         if not (city and film and date and time):
             messagebox.showerror("Error","Check price first.")
             return
+        if tickets < 1:
+            messagebox.showerror("Error", "Must book at least 1 ticket.") #ERROR FIX
+            return
         db=DatabaseManager()
         sess=db.execute_query("""SELECT sessions.id FROM sessions 
                                  JOIN films ON films.id=sessions.filmId 
@@ -194,7 +202,11 @@ class BookingScreen:
             'ticketType':ttype,
             'userId':self.user_data['id'],
             'sessionId':sessionId,
-            'totalPrice':total
+            'totalPrice':total,
+            'city': city,
+            'film': film,
+            'time': time,
+            'numTickets': tickets
         }
         db.insert_record('bookings',data)
         messagebox.showinfo("Success",f"Booking confirmed!\nRef: {booking_id}\nTotal: £{total:.2f}")
@@ -214,16 +226,17 @@ class BookingScreen:
     def update_receipt(self, booking_id, details):
         """Update the receipt display with booking details"""
         receipt_text = f"""
-        BOOKING REFERENCE: {booking_id}
-        ------------------------
-        Film: {details['film']}
-        Date: {details['date']}
-        Time: {details['time']}
-        Screen: {details['screen']}
-        Number of Tickets: {details['tickets']}
-        ------------------------
+        BOOKING REFERENCE: 
+        {booking_id}
+        -----------------
+        Film: {details.get('film', 'N/A')}
+        Date: {details.get('date', 'N/A')}
+        Time: {details.get('time', 'N/A')}
+        Screen: {details.get('tickets', 'N/A')}
+        Number of Tickets: {details.get('numTickets', 'N/A')}
+        -----------------
         Total Cost: £{details['total']:.2f}
-        ------------------------
+        -----------------
         Booking Date: {details['date']}
         """
         
@@ -231,3 +244,29 @@ class BookingScreen:
         self.receipt_text.delete(1.0, tk.END)
         self.receipt_text.insert(1.0, receipt_text)
         self.receipt_text.config(state='disabled')
+    
+    def load_booking_receipt(self):
+        booking_id = self.booking_id_entry.get()
+        if not booking_id:
+            messagebox.showerror("Error", "Please enter a booking ID.")
+            return
+
+        db = DatabaseManager()
+        booking_data = db.execute_query("SELECT * FROM bookings WHERE bookingID = ?", (booking_id,))
+
+        if not booking_data:
+            messagebox.showerror("Error", "No booking found with the provided ID.")
+            return
+
+        booking_details = {
+            'film': booking_data[0][10],
+            'date': booking_data[0][3],
+            'time': booking_data[0][12],
+            'tickets': booking_data[0][5],
+            'total': booking_data[0][8],
+            'booking_date': booking_data[0][2],
+            'city': booking_data[0][9],
+            'numTickets': booking_data[0][4]
+        }
+
+        self.update_receipt(booking_id, booking_details)
