@@ -1,3 +1,10 @@
+
+Authors:
+    Zayan Abdulla Nazil (23061331)
+    Yoosuf Ayaan Musthaq (23064777)
+    Mohamed Shaihan Fath-hulla (23061309)
+
+
 Instructions:
 1. Ensure Python 3.x is installed.
 2. Run 'main.py' to start the application.
